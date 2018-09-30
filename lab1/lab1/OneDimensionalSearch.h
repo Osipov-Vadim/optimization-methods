@@ -5,8 +5,8 @@
 
 #include "Task.h"
 
-#define statsOn false
 #include "stats.h"
+
 
 
 template<unsigned N>

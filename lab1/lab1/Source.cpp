@@ -6,14 +6,18 @@
 #include <iomanip> 
 #include <fstream>
 
+#define statsOn true
 #include "OneDimensionalSearch.h"
 #include "GradientDescent.h"
 
 
-
-
-
-
+template<class T>
+auto cout_point(T &p) {
+	for (int i = 0; i < p.size(); ++i) {
+		std::cout << p[i] << ' ';
+	}
+	std::cout << '\n';
+}
 
 //---------------------------------------------------
 
@@ -30,9 +34,7 @@ int main() {
 	std::cout << std::setprecision(5);
 	std::cout.setf(std::ios::fixed, std::ios::floatfield);
 	//--------------------------------
-
-
-
+	
 
 #if 1
 	{
@@ -46,7 +48,7 @@ int main() {
 		TaskHelper<double, double> t8([](double x) {return x * x*x - x; }, 0, 1);
 		TaskHelper<double, double> h1([](double x) {return 4.2 * x * x + 23/x; }, 0, 8);
 
-		auto &curTask = h1;
+		auto &curTask = t4;
 		//
 
 		std::cout << "Dichotomy" << '\n';;
@@ -74,7 +76,7 @@ int main() {
 	{
 		Task<double, double, double> t1(
 			[](double x1, double x2) {
-			return 100 * pow(x2 - pow(x1, 3), 2) + pow(1 - x1, 2);
+			return 100 * pow(x2 - pow(x1, 2), 2) + pow(1 - x1, 2);
 		});
 		Task<double, double, double> t2(
 			[](double x1, double x2) {
@@ -92,41 +94,34 @@ int main() {
 
 
 
-
-
 		auto curTask = t1;
 
-		auto p1 = make_point(-50.0, 50.0);
-		auto p2 = make_point(5.0, 0);
-		auto dir = make_point(0.01, 0.0);
 
+		//auto dir = make_point(0.01, 0.0);
 		//func_sab(t1, make_point(2, 14.5), make_point(3, 15.5), 0.1);
 		//func_eps_point(t1, make_point(2.46, 14.97), 0.01);
 		//check_min(t1, make_point(2.4646, 14.9729), 0.01);
 
 
-		bool bad = false;
+		/*bool bad = false;
 		auto point = findSegmentWithMin(tt, p1, dir, bad);
-		if (bad == true) std::cout << " lool \n";
+		if (bad == true) std::cout << " lool \n";*/
 		//std::cout << point.first[0] << ' ' << point.first[1] << ' ' << point.second[0] << ' ' << point.second[1] << '\n';
 
 
-		auto s1 = make_point(-3, 4);
-		auto s2 = make_point(5, -2);
 
-		//func_ab(t1, p1, p2, 100);
+		
+		std::cout << "Gradient" << '\n';
+		auto p1 = make_point(-5, -5);
+		auto p2 = make_point(5, 5);
+		RunOnTheArea(curTask, p1, p2, 5);
+		std::cout << "--------------------------\n";
+
+
+
 
 		auto min = GradientDescent(t1, p1);
 		cout_point(min);
-		std::cout << "Gradient" << '\n';
-
-		std::cout << "--------------------------\n";
-
-		//RunOnTheArea(curTask, p1, p2, 1);
-
-		std::cout << "--------------------------\n";
-
-
 	}
 #endif
 

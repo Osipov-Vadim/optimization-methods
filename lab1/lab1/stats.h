@@ -1,10 +1,14 @@
 #pragma once
 #include <vector> 
 #include <ostream>
+#include <fstream>
+#include <iostream>
+#include <iomanip> 
 #include "Point.h"
 
 template<size_t N>
 struct Stats {
+public:
 	size_t iter;
 	size_t call_f;
 
@@ -14,16 +18,20 @@ struct Stats {
 	Point<N> b;
 
 	Stats(size_t i = 1)
-		:iter(0), call_f(0), a(Point<N>()), b(Point<N>()), last_len(-1), isFirst(true)
+		:iter(0), call_f(0), 
+		a(Point<N>()), b(Point<N>()), 
+		last_len(-1), isFirst(true), os(std::cout)
 	{
 		x_fx.resize(i);
-
+		fout.open("output.txt", std::ios::app);
+		fout << std::setprecision(7);
+		fout.setf(std::ios::fixed, std::ios::floatfield);
 	}
 
-	void show(std::ostream &os = std::cout) {
+	void show() {
 #if statsOn
 		if (isFirst) {
-			showTitle(os);
+			showTitle();
 			isFirst = false;
 		}
 		os << std::setw(t_s) << iter;
@@ -56,17 +64,24 @@ struct Stats {
 #endif
 	}
 
-	void showFirst(std::ostream &os = std::cout) {
+	void showFirst() {
 #if statsOn
 
 		if (isFirst) {
-			showTitle(os);
+			showTitle();
 			isFirst = false;
 		}
 		os << std::setw(t_s) << iter;
 		os << std::setw(t_s) << call_f;
-		os << std::setw(t*x_fx[0].first.size()*x_fx.size()) << "-";
-		os << std::setw(t*x_fx.size()) << "-";
+
+		for (size_t j = 0; j < x_fx.size(); ++j) {
+			for (size_t i = 0; i < x_fx[j].first.size(); ++i) {
+				os << std::setw(t) << "-";
+			}
+			//
+			os << std::setw(t) << "-";
+		}
+
 		os << std::setw(t) << '-';
 		last_len = (b - a).lenght();
 		//
@@ -82,7 +97,10 @@ struct Stats {
 	}
 
 private:
-	void showTitle(std::ostream &os = std::cout) {
+	std::ofstream fout;
+	std::ostream &os;
+
+	void showTitle() {
 #if statsOn
 		os << std::setw(t_s) << "iter";
 		os << std::setw(t_s) << "call";
@@ -100,6 +118,6 @@ private:
 
 	double last_len;
 	bool isFirst;
-	size_t t_s = 5;
-	size_t t = 11;
+	size_t t_s	= 5;
+	size_t t	= 15;
 };
